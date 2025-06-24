@@ -1,6 +1,6 @@
 name: rui_snackbar
 description: "A smart SnackBar system for Flutter that supports repeat counting, custom icons, actions, animations, and positioning."
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/dereking/rui_snackbar
 repository: https://github.com/dereking/rui_snackbar
 

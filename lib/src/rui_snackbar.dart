@@ -135,4 +135,124 @@ class RuiSnackbar {
         backgroundColor: Colors.orange,
         icon: Icons.warning,
       );
+
+
+
+
+// show a dialog with options to choose from
+  static Future<T?> showOptionsChooseDialog<T>(BuildContext ctx, {
+    required String title,
+    required String content,
+    required List<T> options,
+    T? defaultOption,
+    Function(T)? itemBuilder,
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) async { 
+
+    final result = await showDialog<T>(
+      context: ctx,
+      builder: (_) => SimpleDialog(
+        title: Text(title),
+        children: options.map((option) {
+          return SimpleDialogOption(
+            onPressed: () {
+              Navigator.of(ctx).pop(option);
+            },
+            child: itemBuilder == null
+                ? Text(option.toString())
+                : itemBuilder(option),
+          );
+        }).toList(),
+      ),
+    );
+    return result ?? defaultOption!;
+  }
+
+//show a confirmation dialog with custom text and actions
+  static Future<bool> showConfirmDialog(BuildContext ctx,{
+    required String title,
+    required String content,
+    String confirmText = 'OK',
+    String cancelText = 'Cancel',
+    VoidCallback? onConfirm,
+    VoidCallback? onCancel,
+  }) async { 
+
+    final result = await showDialog<bool>(
+      context: ctx,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: [
+          TextButton(
+            child: Text(cancelText),
+            onPressed: () => Navigator.of(ctx).pop(false),
+          ),
+          TextButton(
+            child: Text(confirmText),
+            onPressed: () => Navigator.of(ctx).pop(true),
+          ),
+        ],
+      ),
+    );
+    if (result == true && onConfirm != null) {
+      onConfirm();
+    } else if (onCancel != null) {
+      onCancel();
+    }
+    return result ?? false;
+  }
+ 
+
+  static Future<void> showErrorDialog(BuildContext ctx,String message) async {  
+
+    await showDialog(
+      context: ctx,
+      builder: (_) => AlertDialog(
+        title: const Text('错误'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            child: const Text('确定'),
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Future<String?> showInputDialog(BuildContext ctx,{
+    required String title,
+    required String hintText,
+    String initialValue = '',
+    String confirmText = 'OK',
+    String cancelText = 'Cancel',
+  }) async {  
+
+    String input = initialValue;
+
+    final result = await showDialog<String>(
+      context: ctx,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: TextField(
+          onChanged: (value) => input = value,
+          decoration: InputDecoration(hintText: hintText),
+        ),
+        actions: [
+          TextButton(
+            child: Text(cancelText),
+            onPressed: () => Navigator.of(ctx).pop(),
+          ),
+          TextButton(
+            child: Text(confirmText),
+            onPressed: () => Navigator.of(ctx).pop(input),
+          ),
+        ],
+      ),
+    );
+
+    return result;
+  }
 }
